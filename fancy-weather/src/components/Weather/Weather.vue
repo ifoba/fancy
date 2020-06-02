@@ -1,6 +1,15 @@
 <template>
   <div class="weather-list">
-    <p class="time">{{cityValue}} {{new Date(date(timezone)).toLocaleString().slice(0, -3).split(',').join(' ')}}</p>
+    <p @load="update()" class="time">{{cityValue}} {{time}}</p>
+      <div class="weather-list_container">
+        <WeatherList 
+          v-for="weather in weathers" :key="weather.id"
+          v-bind:weather="weather"
+          v-bind:index="index" 
+          v-on:changeDay="changeDay"
+          v-bind:celsius="celsius"
+        />
+      </div>  
       <div class="wrapper">
         <WeatherDay
         v-bind:weatherInfo="weathers[index]"
@@ -11,16 +20,7 @@
         v-bind:location="location"
         v-bind:content="content[lang]"
         />
-      </div>
-      <div class="weather-list_container">
-        <WeatherList 
-          v-for="weather in weathers" :key="weather.id"
-          v-bind:weather="weather"
-          v-bind:index="index" 
-          v-on:changeDay="changeDay"
-          v-bind:celsius="celsius"
-        />
-      </div>    
+      </div>  
   </div>
 </template>
 
@@ -39,15 +39,15 @@ export default {
     data() {
       return {
         index: 0,
-        date(zone) {
+        time: '',
+        date: function() {
           let x = new Date();
-          let currentTime = (zone / 60 + x.getTimezoneOffset())*60*1000;
-          console.log(zone)
-          return x.getTime()+currentTime
-        }
+          let currentTime = (this.timezone / 60 + x.getTimezoneOffset())*60*1000;
+          return  new Date(x.getTime()+currentTime).toLocaleString().split(',').join(' ')
+        },
+        update: setInterval(()=> {this.time = this.date()},1000)
         
-        
-      }
+      } 
     },
     methods: {
       changeDay: function(id) {

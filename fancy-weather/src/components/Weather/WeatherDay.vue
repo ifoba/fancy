@@ -16,6 +16,13 @@
 <script>
 export default {
     props: ['weatherInfo', 'content', 'lang', 'celsius'],
+    data() {
+        return {
+            description() {
+                return this.weatherInfo.description + 123
+            }
+        }
+    }
 }
 </script>
 

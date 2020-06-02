@@ -83,17 +83,17 @@ export default {
     .then(resGeo => resGeo.json())
     .then(dataGeo => {
       this.location= dataGeo.loc.split(',').reverse();
-      this.cityValue = dataGeo.city;
+      fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${dataGeo.city}&lang=en-${this.lang}`)
+      .then(resTranslate => resTranslate.json() )
+      .then(res => { this.cityValue = res.text[0]})
      fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${dataGeo.city}&lang=${this.lang}&units=metric&appid=3054695a08f59e2c1526d4fd25c27d02`)
      .then(resWeather => resWeather.json())
      .then(dataWeather => {
-             console.log(dataWeather)
        this.loading = false
        const noon = 43200;
        const day = 86400;
        const dayWeek = this.content[this.lang].dayWeek;
        this.timezone = dataWeather.city.timezone;
-       console.log(dataWeather)
        this.weather = dataWeather.list.filter(item=>item.dt % day === noon).map((el,i)=> {
          return {
            id: i,
@@ -107,7 +107,14 @@ export default {
            humidity: Math.round(el.main.humidity),
            date: dayWeek[new Date(el.dt_txt).getDay()]
          }
-       })
+       });
+       if(this.lang === 'be') {
+         this.weather.forEach(el => {
+           fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${el.description}&lang=en-be`)
+          .then(resTranslate => resTranslate.json() )
+          .then(res => { el.description = res.text[0]})
+         })
+       }
      })
    });
   },
@@ -129,6 +136,15 @@ export default {
         let index = this.content[this.lang].dayWeek.indexOf(el.date)
         el.date = this.content[str].dayWeek[index]
       });
+      fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${this.cityValue}&lang=${this.lang}-${str}`)
+      .then(resTranslate => resTranslate.json() )
+      .then(res => {this.cityValue = res.text[0]})
+      this.weather.forEach(el => {
+        fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${el.description}&lang=${this.lang}-${str}`)
+        .then(resTranslate => resTranslate.json() )
+        .then(res => {el.description = res.text[0]})
+      })
+      
       this.lang = str;
     },
     changeDegree(){
@@ -154,11 +170,11 @@ export default {
        const day = 86400;
        const dayWeek = this.content[this.lang].dayWeek;
        this.weather = dataWeather.list.filter(item=>item.dt % day === noon).map((el,i)=> {
-         console.log(el.weather[0].icon, i)
+         let description = el.weather[0].description;
          return {
            id: i,
            icon: imgList[el.weather[0].icon],
-           description: el.weather[0].description,
+           description: description,
            temp: Math.round(el.main.temp),
            fahr: Math.round(el.main.temp*1.8 +32),
            fl: Math.round(el.main.feels_like),
@@ -168,6 +184,13 @@ export default {
            date: dayWeek[new Date(el.dt_txt).getDay()]
          }
        })
+       if(this.lang === 'be') {
+         this.weather.forEach(el => {
+           fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${el.description}&lang=en-be`)
+          .then(resTranslate => resTranslate.json() )
+          .then(res => { el.description = res.text[0]})
+         })
+       }
      })
      .catch(()=> {
       alert('Ошибка запроса')

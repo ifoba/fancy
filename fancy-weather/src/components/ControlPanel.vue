@@ -1,7 +1,7 @@
 <template>
     <div class="control">
         <div class="control_btn">
-            <button><img class="refresh" src="../assets/refresh.png" alt=""></button>
+            <button><img  class="refresh" src="../assets/refresh.png" alt="" @click="photo()"></button>
             <select id="select" v-on:change="test()">
                 <option value="ru">RU</option>
                 <option value="en">EN</option>
@@ -20,6 +20,7 @@
             v-bind:placeholder="content[lang].searchInput"
             v-model="cityValue"
             >
+            <img class="micro" src="../assets/micro.png" alt="" @click="rec()">
             <button type="submit">{{content[lang].searchBtn}}</button>
         </form>
     </div>
@@ -30,10 +31,27 @@ export default {
     props : ["content", "lang", "celsius"],
     data() {
         return {
-            cityValue: ''
+            cityValue: '',
+            
+
         }
     },
     methods: {
+        photo() {
+            fetch(`https://api.unsplash.com/photos/random?orientation=landscape&per_page=1&query=nature&client_id=udLcIb5SCH9DA3omtchD6rN2wVb2LK8HuyeH4rcp3y0`)
+            .then(res => res.json())
+            .then(data => console.log(data))
+
+        },
+        rec() {
+            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+            let recognition = SpeechRecognition? new SpeechRecognition() : false
+            recognition.addEventListener('result', e => {
+                this.cityValue = e.results[0][0].transcript;
+            console.log(e.results[0][0].transcript)
+        })
+           recognition.start()
+        },
         test: function () {
            this.$emit('changeLang', event.target.value)
         },
@@ -149,4 +167,16 @@ export default {
         font-family: 'Montserrat', sans-serif;
         
     }
+    button:active, button:focus {
+    outline: none;
+    }
+    select:active, select:focus {
+    outline: none;
+    }
+    .micro {
+        width: 35px;
+        background: #ffffff;
+        cursor: pointer;
+    }
+    
 </style>
