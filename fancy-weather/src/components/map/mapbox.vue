@@ -55,5 +55,17 @@ span {
   color: #ffffff;
   font-size: 20px;
 }
+@media  (max-width: 1300px){
+.container {
+  width: 35vw;
+  height: 35vw;
+}
+}
+@media  (max-width: 550px){
+.container {
+  width: 90vw;
+  height: 45vw;
+}
+}
 
 </style>

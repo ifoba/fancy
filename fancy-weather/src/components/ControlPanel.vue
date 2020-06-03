@@ -20,7 +20,12 @@
             v-bind:placeholder="content[lang].searchInput"
             v-model="cityValue"
             >
-            <img class="micro" src="../assets/micro.png" alt="" @click="rec()">
+            <div class="micro">
+                <img  src="../assets/micro.png" alt="" @click="rec()">
+                <div class="micActive" v-bind:class='{ active : microActive }' ></div>
+            </div>
+            
+            
             <button type="submit">{{content[lang].searchBtn}}</button>
         </form>
     </div>
@@ -32,23 +37,50 @@ export default {
     data() {
         return {
             cityValue: '',
+            microActive: false
             
 
         }
     },
     methods: {
         photo() {
-            fetch(`https://api.unsplash.com/photos/random?orientation=landscape&per_page=1&query=nature&client_id=udLcIb5SCH9DA3omtchD6rN2wVb2LK8HuyeH4rcp3y0`)
+            let x = new Date();
+            let currentTime = (this.timezone / 60 + x.getTimezoneOffset())*60*1000;
+            let time = new Date(x.getTime()+currentTime).getHours();
+            let str = ''
+            if(time >= 0 && time < 7 ){
+                str = 'night'
+            }else if(time >= 7 && time < 12){
+                str = 'dawn'
+            }else if (time >= 12 && time < 6){
+                str = 'noon'
+            }else {
+                str ='sunset'
+            }
+            console.log('Параметр запроса картинки:', str )
+            fetch(`https://api.unsplash.com/photos/random?orientation=landscape&per_page=1&query=${str}&client_id=udLcIb5SCH9DA3omtchD6rN2wVb2LK8HuyeH4rcp3y0`)
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data =>{
+                let img = new Image();
+                img.src = data.urls.full;
+                img.addEventListener('load', ()=>{
+                    document.body.style.background = `center/ cover url('${data.urls.full}')`
+                })
+            })
+            .catch(()=>{
+                document.body.style.background = `url('https://rulib.info/uploads/11_05_2013/view/201209/oboik.ru_7234.jpg')`
+                alert('Закончились запросы по картинкам')
+            })
 
         },
         rec() {
+            this.microActive = true
             let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
             let recognition = SpeechRecognition? new SpeechRecognition() : false
             recognition.addEventListener('result', e => {
                 this.cityValue = e.results[0][0].transcript;
-            console.log(e.results[0][0].transcript)
+                this.microActive = false
+                this.onSubmit()
         })
            recognition.start()
         },
@@ -173,10 +205,49 @@ export default {
     select:active, select:focus {
     outline: none;
     }
+    input {
+    outline: none;
+    }
     .micro {
+        display: flex;
+    }
+    .micro img {
+        display: flex;
         width: 35px;
         background: #ffffff;
         cursor: pointer;
     }
-    
+    .micActive {
+        display: none;
+        width: 8px;
+        height: 8px;
+        background: red;
+        position: absolute;
+        border-radius: 4px;
+        margin-left: 23px;
+    }
+    .micActive.active {
+        display: block;
+    }
+@media  (max-width: 700px){
+    .control{
+        padding: 10px;
+    }
+    input {
+    width: 20vw;
+    font-size: 10px;
+}
+
+}
+
+@media  (max-width: 500px){
+    .control {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    form {
+        margin-top: 5px;
+    }
+}
 </style>

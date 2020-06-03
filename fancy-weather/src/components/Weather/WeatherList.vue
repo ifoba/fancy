@@ -66,5 +66,44 @@ export default {
     font-weight: 600;
     color: #ffffff;
 }
+@media  (max-width: 950px){
 
+.icon {
+  font-size: 40px;
+  color: #ffffff;
+  margin-left: 1vw
+}
+.temp {
+    font-size: 25px;
+}
+}
+@media  (max-width: 700px){
+.wether-list_block:nth-child(5){
+    display: none;
+}
+.wether-list_block{
+width: 20vw;
+}
+}
+@media  (max-width: 550px){
+.wether-list_block:nth-child(4){
+    display: none;
+}
+.wether-list_block{
+width: 30vw;
+}
+}
+@media  (max-width: 400px){
+    .wether-list_block {
+        padding: 3px;
+    }
+.icon {
+  font-size: 30px;
+  color: #ffffff;
+  margin-left: 1vw
+}
+.temp {
+    font-size: 20px;
+}
+}
 </style>

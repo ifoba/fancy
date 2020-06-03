@@ -43,6 +43,9 @@ export default {
         date: function() {
           let x = new Date();
           let currentTime = (this.timezone / 60 + x.getTimezoneOffset())*60*1000;
+          document.querySelector('form').addEventListener('submit', ()=>{
+            clearTimeout(this.update)
+          })
           return  new Date(x.getTime()+currentTime).toLocaleString().split(',').join(' ')
         },
         update: setInterval(()=> {this.time = this.date()},1000)
@@ -59,7 +62,8 @@ export default {
 
 <style scoped>
 .time{
-  margin: 5px;
+  margin: 0px;
+  padding-left: 10px;
   background: #353535d5;
   border-radius: 10px;
   font-size: 40px;
@@ -79,7 +83,25 @@ export default {
 }
 .weather-list_container {
   display: flex;
-  margin-top: 5px;
+  margin: 5px 0;
+}
+@media  (max-width: 700px){
+.time {
+  font-size: 30px;
+}
+}
+@media  (max-width: 550px){
+.time {
+  font-size: 20px;
+}
+.wrapper {
+  flex-direction: column;
+}
 }
 
+@media  (max-width: 550px){
+.time {
+  font-size: 18px;
+}
+}
 </style>

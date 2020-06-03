@@ -7,7 +7,8 @@
       v-bind:celsius="celsius"
       v-on:changeLang="changeLang"
       v-on:changeCity="changeCity"
-      v-on:changeDegree="changeDegree" />
+      v-on:changeDegree="changeDegree"
+      v-bind:timezone="timezone" />
     </div>
     <div class="weather">
       <Loader v-if="loading"  />
@@ -158,9 +159,6 @@ export default {
         url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&lang=${this.lang}&units=metric&appid=3054695a08f59e2c1526d4fd25c27d02`
       }
       this.loading = true;
-      fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${city}&lang=en-${this.lang}`)
-      .then(resTranslate => resTranslate.json() )
-      .then(res => { this.cityValue = res.text[0]})
       fetch(url)
      .then(resWeather => resWeather.json())
      .then(dataWeather => {
@@ -184,6 +182,9 @@ export default {
            date: dayWeek[new Date(el.dt_txt).getDay()]
          }
        })
+       fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${city}&lang=en-${this.lang}`)
+      .then(resTranslate => resTranslate.json() )
+      .then(res => { this.cityValue = res.text[0]})
        if(this.lang === 'be') {
          this.weather.forEach(el => {
            fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200505T091407Z.2a0ab1928c9a0812.1871e129c68597543ce570b0dca45bfdb1eb6906&text=${el.description}&lang=en-be`)
@@ -191,16 +192,19 @@ export default {
           .then(res => { el.description = res.text[0]})
          })
        }
+       fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city}&key=c6b6da0f80f24b299e08ee1075f81aa5&pretty=1&no_annotations=1`)
+      .then(res => res.json())
+      .then(data => {
+        this.location = [data.results[0].geometry.lng, data.results[0].geometry.lat]
+      })
+      .catch(()=>{
+        alert('Закончились запросы карты')
+      })
      })
      .catch(()=> {
       alert('Ошибка запроса')
       this.loading = false;
      })
-      /* fetch(`https://api.opencagedata.com/geocode/v1/json?q=${this.cityValue}&key=c6b6da0f80f24b299e08ee1075f81aa5&pretty=1&no_annotations=1`)
-      .then(res => res.json())
-      .then(data => {
-        this.location = [data.results[0].geometry.lng, data.results[0].geometry.lat]
-      }) */
     }
   },
   components: {
@@ -214,6 +218,10 @@ export default {
 <style>
 body {
   margin: 0;
+    background: url('./assets/bridge.jpg');
+    background-size: cover ;
+    background-position: center;
+
 }
 #app {
   display: flex;
@@ -221,7 +229,8 @@ body {
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background: url('./assets/bridge.jpg');
+
+
 }
 .controlPanel {
   width: 90vw;

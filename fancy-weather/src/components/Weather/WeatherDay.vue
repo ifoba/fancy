@@ -28,6 +28,7 @@ export default {
 
 <style scoped>
 .icon {
+  margin-top: 15px;
   font-size: 200px;
   color: #ffffff;
   
@@ -58,5 +59,45 @@ p{
 }
 .descrip {
     text-transform: capitalize;
+}
+@media  (max-width: 1300px){
+.icon{
+    font-size: 150px;
+    }
+span {
+    width: 15vw;
+    margin-left: 3vw;
+    font-size: 150px ;
+}
+.weather-day_info {
+    margin-left: 8vw;
+}
+p {
+    font-size: 20px;
+}
+}
+@media  (max-width: 700px){
+.icon{
+    font-size: 100px;
+    }
+span{
+    font-size: 100px;
+    }
+p {
+    font-size: 15px;
+}
+}
+
+
+@media  (max-width: 550px){
+.weather-day {
+    width: 90vw;
+}
+span {
+    width:35vw ;
+}
+.weather-day_info {
+    width: 30vw;
+}
 }
 </style>
