@@ -6,6 +6,7 @@
     @load="onMapLoad" />
     <span>{{content.lat}}: {{location[0]}}</span>
     <span>{{content.lon}}: {{location[1]}}</span>
+    <a href="https://t.me/i_foba"> Напишите в Telegram, если что-то сломалось https://t.me/i_foba</a>
 
   </div>
 </template>
@@ -54,6 +55,9 @@ span {
   font-family: 'Montserrat', sans-serif;
   color: #ffffff;
   font-size: 20px;
+}
+a{
+  color: #d81616;
 }
 @media  (max-width: 1300px){
 .container {

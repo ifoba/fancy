@@ -2,7 +2,7 @@
     <div class="control">
         <div class="control_btn">
             <button><img  class="refresh" src="../assets/refresh.png" alt="" @click="photo()"></button>
-            <select id="select" v-on:change="test()">
+            <select id="select" v-on:change="changeLang()">
                 <option value="ru">RU</option>
                 <option value="en">EN</option>
                 <option value="be">BE</option>
@@ -10,7 +10,7 @@
             <div class="degree">
                 <button v-bind:class='{ notactive : !celsius }'
                 @click="changeDegree()">°C</button>
-                <button v-bind:class='{ notactive : celsius }'
+                <button v-bind:class='{ notactive : celsius}'
                 @click="changeDegree()">°F</button>
             </div>
             
@@ -38,8 +38,6 @@ export default {
         return {
             cityValue: '',
             microActive: false
-            
-
         }
     },
     methods: {
@@ -84,7 +82,8 @@ export default {
         })
            recognition.start()
         },
-        test: function () {
+        changeLang: function () {
+            localStorage.setItem('lang', event.target.value);
            this.$emit('changeLang', event.target.value)
         },
         changeDegree() {

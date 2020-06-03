@@ -39,7 +39,7 @@ export default {
       cityValue: '',
       location: '',
       timezone:'',
-      celsius: false,
+      celsius: '',
       lang:'',
       loading:  true,
       content: {
@@ -77,6 +77,24 @@ export default {
           lon: 'Даўгата'
         }
       }
+    }
+  },
+  beforeMount() {
+    if(localStorage.getItem('lang') === null){
+      this.lang = 'en'
+    }else{
+      this.lang = localStorage.getItem('lang')
+    }
+    if(localStorage.getItem('deg') === null){
+      this.celsius = true
+      
+    }else {
+      if(localStorage.getItem('deg') === 'true'){
+        this.celsius = true
+      }else{
+        this.celsius = false
+      }
+      
     }
   },
   mounted() {
@@ -119,18 +137,7 @@ export default {
      })
    });
   },
-  created() {
-    if(localStorage.getItem('lang')=== null){
-      this.lang = 'en'
-    }else{
-      this.lang = localStorage.getItem('lang')
-    }
-    if(localStorage.getItem('deg')=== null){
-      this.celsius = true
-    }else {
-      this.celsius = localStorage.getItem('deg')
-    }
-  },
+
   methods: {
     changeLang(str) { 
       this.weather.forEach(el => {
@@ -150,6 +157,7 @@ export default {
     },
     changeDegree(){
       this.celsius = !this.celsius
+      localStorage.setItem('deg', this.celsius );
     },
     changeCity(city) {
       let url = '';
